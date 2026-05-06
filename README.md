@@ -1,3 +1,5 @@
+[![CI](https://github.com/micnussb17/cd-mcm-exercise-nussbaumer/actions/workflows/ci.yml/badge.svg)](https://github.com/micnussb17/cd-mcm-exercise-nussbaumer/actions/workflows/ci.yml)
+
 # Exercise 2: Microservice Architecture, Docker & GitHub Actions
 
 **Course:** Continuous Delivery in Agile Software Development (Master)
