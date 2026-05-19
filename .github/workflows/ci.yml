@@ -30,13 +30,19 @@ jobs:
         run: go mod download
 
       - name: Run tests with coverage
-        run: go test -v -coverprofile=coverage.out -coverpkg=./internal/model,./internal/store,./internal/handler ./internal/model ./internal/store ./internal/handler && grep -v "postgres" coverage.out > coverage_filtered.out && mv coverage_filtered.out coverage.out
+        run: |
+          go test -v -coverprofile=coverage.out -coverpkg=./internal/model,./internal/store,./internal/handler ./internal/model ./internal/store ./internal/handler
+          grep -v "postgres" coverage.out > coverage_filtered.out
+          mv coverage_filtered.out coverage.out
+          go tool cover -html=coverage.out -o coverage.html
 
       - name: Upload coverage artifact
         uses: actions/upload-artifact@v4
         with:
-          name: coverage-${{ matrix.go-version }}
-          path: coverage.out
+          name: coverage-${{ matrix.go-version }}-${{ matrix.os }}
+          path: |
+            coverage.out
+            coverage.html
 
       - name: Build
         run: go build -o api-server ./cmd/api
