@@ -60,7 +60,7 @@ func (h *Handler) CreateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer func() {
-	_ = r.Body.Close()
+		_ = r.Body.Close()
 	}()
 
 	if !p.Validate() {
@@ -82,7 +82,7 @@ func (h *Handler) UpdateProduct(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer func() {
-	_ = r.Body.Close()
+		_ = r.Body.Close()
 	}()
 
 	updated, err := h.Store.Update(id, p)
