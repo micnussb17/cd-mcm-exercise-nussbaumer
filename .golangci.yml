@@ -10,7 +10,6 @@ linters:
     - staticcheck
     - unused
     - ineffassign
-    - gosimple
     - gocyclo
     - misspell
     - gocritic
