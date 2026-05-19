@@ -4,11 +4,11 @@ on:
   push:
     branches:
       - main
-      - exercise/02-microservice-docker
+      - exercise/03-ci-pipeline
   pull_request:
     branches:
       - main
-      - exercise/02-microservice-docker
+      - exercise/03-ci-pipeline
 
 jobs:
   test:
