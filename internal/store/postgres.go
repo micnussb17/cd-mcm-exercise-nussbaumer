@@ -47,7 +47,9 @@ func (s *PostgresStore) GetAll() ([]model.Product, error) {
 	if err != nil {
 		return nil, err
 	}
-	defer rows.Close()
+	defer func() {
+		_ = rows.Close()
+	}()
 
 	var products []model.Product
 	for rows.Next() {
