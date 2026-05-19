@@ -11,7 +11,10 @@ linters:
     - unused
     - ineffassign
     - gosimple
-    - gofmt
     - gocyclo
     - misspell
     - gocritic
+
+formatters:
+  enable:
+    - gofmt
