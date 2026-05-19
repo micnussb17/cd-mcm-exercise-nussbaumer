@@ -1,4 +1,7 @@
 # Exercise 3: CI Pipeline -- SonarCloud, Matrix Builds & Linting
+[![CI](https://github.com/micnussb17/cd-mcm-exercise-nussbaumer/actions/workflows/ci.yml/badge.svg)](https://github.com/micnussb17/cd-mcm-exercise-nussbaumer/actions/workflows/ci.yml)
+
+# Exercise 2: Microservice Architecture, Docker & GitHub Actions
 
 **Course:** Continuous Delivery in Agile Software Development (Master)
 **Points:** 24
@@ -16,6 +19,88 @@
 - Completed Exercise 2 (working CI pipeline with Docker build)
 - SonarCloud account (free for open-source projects)
 - Understanding of GitHub Actions workflow syntax
+| Exercise | Topic | Branch |
+|----------|-------|--------|
+| 1 | Git Basics: PRs, Interactive Rebase, Unit Tests | `exercise/01-git-basics` |
+| 2 | Microservice Architecture, Docker & GitHub Actions | `exercise/02-microservice-docker` |
+| 3 | CI Pipeline: SonarCloud, Matrix Builds, Linting | `exercise/03-ci-pipeline` |
+| 4 | Vulnerability Scanning & Kubernetes Deployment | `exercise/04-security-k8s` |
+
+## Technology Stack
+
+- **Language:** Go 1.24+
+- **Web Framework:** Gorilla Mux
+- **Database:** PostgreSQL
+- **Containerization:** Docker & Docker Compose
+- **CI/CD:** GitHub Actions
+- **Code Quality:** SonarCloud, golangci-lint
+- **Security:** Trivy, govulncheck
+- **Deployment:** Kubernetes (Minikube)
+
+## Project: Product Catalog API
+
+Throughout the four exercises you will build and evolve a **Product Catalog API** -- a RESTful web service for managing products (create, read, update, delete). The API is written in Go and grows in complexity with each exercise.
+
+### What the Application Does
+
+The Product Catalog API exposes the following HTTP endpoints:
+
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/health` | Health check |
+| GET | `/products` | List all products |
+| POST | `/products` | Create a new product |
+| GET | `/products/{id}` | Get a product by ID |
+| PUT | `/products/{id}` | Update a product |
+| DELETE | `/products/{id}` | Delete a product |
+
+A product has three fields: `id`, `name`, and `price`.
+
+### Project Structure
+
+```
+cmd/api/main.go                # Application entry point -- starts the HTTP server
+internal/
+  model/product.go             # Product data model and validation
+  store/
+    memory.go                  # In-memory store (Exercise 1-2)
+    postgres.go                # PostgreSQL store (from Exercise 2)
+  handler/handler.go           # HTTP request handlers (routing, JSON encoding)
+Dockerfile                     # Multi-stage Docker build (from Exercise 2)
+docker-compose.yml             # Orchestrates API + PostgreSQL (from Exercise 2)
+.github/workflows/ci.yml       # CI/CD pipeline (from Exercise 2, extended in 3-4)
+k8s/                           # Kubernetes manifests (Exercise 4)
+```
+
+### What You Build in Each Exercise
+
+| Exercise | What You Do |
+|----------|-------------|
+| **1 -- Git Basics** | Fork the repo, write unit tests for the in-memory store, create your first Pull Request, and practice interactive rebase to clean up commit history. |
+| **2 -- Microservice & Docker** | Understand the microservice architecture, complete a GitHub Actions CI pipeline with a Docker build job, analyze the Dockerfile and Docker Compose setup, and add HTTP handler tests. |
+| **3 -- CI Pipeline** | Extend the pipeline with matrix builds (multiple Go versions and OS), integrate golangci-lint for code quality, set up SonarCloud for static analysis, and improve test coverage to ≥ 80%. |
+| **4 -- Security & K8s** | Scan the Docker image with Trivy, scan Go dependencies with govulncheck, deploy the application to a local Kubernetes cluster (Minikube), and configure production-readiness features (probes, resource limits). |
+
+By the end of the course, you will have a fully containerized Go microservice with a complete CI/CD pipeline including automated testing, linting, security scanning, and Kubernetes deployment.
+
+## Prerequisites
+
+- Go 1.24+ installed
+- Git 2.30+
+- GitHub Account
+- Docker Desktop (from Exercise 2)
+- Minikube (Exercise 4)
+- Understand microservice architecture with a REST API in Go
+- Containerize applications using Docker (multi-stage builds)
+- Orchestrate services with Docker Compose
+- Set up a basic CI pipeline with GitHub Actions
+
+## Prerequisites
+
+- Completed Exercise 1
+- Docker Desktop installed
+- Basic understanding of REST APIs
+
 
 ## What's New in This Exercise
 
@@ -23,12 +108,64 @@
 - **SonarCloud configuration** (`sonar-project.properties`) -- static analysis setup
 - **golangci-lint configuration** (`.golangci.yml`) -- linter rules
 - **Coverage reporting** -- `go test -coverprofile`
+1. **Fork** this repository on GitHub (click the "Fork" button in the top right corner). **Uncheck** "Copy the `main` branch only" so that all exercise branches are included in your fork.
+2. **Clone** your fork:
 
+```bash
+git clone https://github.com/<your-username>/CI-CD-MCM.git
+cd CI-CD-MCM
+```
+
+3. Switch to the respective exercise branch:
+The Product Catalog API has been extended with:
+- **PostgreSQL storage** (`internal/store/postgres.go`) -- persistent database backend
+- **Dockerfile** -- multi-stage build for minimal container image
+- **docker-compose.yml** -- orchestrates API + PostgreSQL
+- **GitHub Actions** (`.github/workflows/ci.yml`) -- basic CI pipeline
+
+### Architecture
+
+```
+┌──────────────┐     ┌──────────────┐
+│   Client     │────▶│   API (Go)   │
+│  (curl/HTTP) │     │   Port 8080  │
+└──────────────┘     └──────┬───────┘
+                            │
+                     ┌──────▼───────┐
+                     │  PostgreSQL  │
+                     │  Port 5432   │
+                     └──────────────┘
+```
+
+### Local Development
+
+```bash
+# Run with in-memory store (no Docker needed)
+go run ./cmd/api
+
+# Run with Docker Compose (API + PostgreSQL)
+docker compose up --build
+
+# Test the API
+curl http://localhost:8080/health
+curl http://localhost:8080/products
+curl -X POST http://localhost:8080/products \
+  -H "Content-Type: application/json" \
+  -d '{"name":"Widget","price":9.99}'
+```
+
+> **Important:** Do not clone the original repository directly — always work on your own fork so you can push changes and create Pull Requests.
+
+Each exercise branch contains a detailed `README.md` with instructions.
+
+## Author
+- FH-Prof. Dr. Marc Kurz (marc.kurz@fh-hagenberg.at)
 ---
 
 ## Tasks
 
 ### Task 1: Matrix Builds (4 Points)
+### Task 1: Understand the Architecture (2 Points)
 
 The CI workflow already has a matrix strategy with one Go version. Your tasks:
 
@@ -37,12 +174,14 @@ The CI workflow already has a matrix strategy with one Go version. Your tasks:
 3. **Add an OS matrix dimension** (`ubuntu-latest`, `macos-latest`) so tests run on both platforms.
 
 **Expected result:** 4 parallel test jobs (2 Go versions x 2 OS).
+### Task 2: Complete the GitHub Actions Workflow (6 Points)
 
 **Deliverable:** Screenshot of the GitHub Actions matrix view showing all jobs.
 
 ---
 
 ### Task 2: Linting with golangci-lint (6 Points)
+### Task 3: Docker & Docker Compose (8 Points)
 
 1. **Add a `lint` job** to the CI workflow that:
    - Runs `golangci-lint` using the `golangci/golangci-lint-action@v4` action
@@ -143,7 +282,12 @@ The CI workflow already has a matrix strategy with one Go version. Your tasks:
 | Linting with golangci-lint | 6 |
 | SonarCloud Integration | 8 |
 | Code Coverage Improvement | 6 |
+| Architecture Documentation | 2 |
+| GitHub Actions Workflow | 6 |
+| Docker & Docker Compose | 8 |
+| Handler Tests | 8 |
 | **Total** | **24** |
 
 ## Author
 - FH-Prof. Dr. Marc Kurz (marc.kurz@fh-hagenberg.at)
+
