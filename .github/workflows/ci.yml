@@ -87,8 +87,8 @@ jobs:
       - name: Download coverage artifact
         uses: actions/download-artifact@v4
         with:
-          pattern: coverage-1.26-ubuntu-latest
-          merge-multiple: true
+          name: coverage-1.26-ubuntu-latest
+          path: .
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarqube-scan-action@v5
