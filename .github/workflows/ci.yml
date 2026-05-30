@@ -2,9 +2,13 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    branches: 
+      - main
+      - exercise/04-security-k8s
   pull_request:
-    branches: [main]
+    branches: 
+      - main
+      - exercise/04-security-k8s
 
 jobs:
   test:
